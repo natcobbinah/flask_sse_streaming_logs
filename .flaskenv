@@ -1,0 +1,2 @@
+FLASK_APP=flask_sse_with_logs
+FLASK_ENV=development

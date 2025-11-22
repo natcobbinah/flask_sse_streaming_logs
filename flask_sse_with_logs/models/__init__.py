@@ -1,0 +1,2 @@
+from .logfile_entities import SIEMLogsDBtable
+from .logfile_entities import SIEMLogsFileDBProperties
