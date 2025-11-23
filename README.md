@@ -31,7 +31,10 @@ being used by users both externally and internally, so that real-time fixes can 
    the **generator function** to **run**, thereby **ingesting and processing the logfile** from the SIEM directory
 3. After parsing and processing the logfile records and storing the results in the database tables, a **COMPLETED** server-sent event stream
    is returned to the frontend
-4. The **frontend**, upon receiving the response, **reloads the datatable**, which by default contains an **AJAX body**, thereby sending a **post-request**
+
+   <img width="1920" height="1080" alt="server-sent-event-completed message" src="https://github.com/user-attachments/assets/77255ba9-52ba-4a00-9152-f88931a8701f" />
+
+5. The **frontend**, upon receiving the response, **reloads the datatable**, which by default contains an **AJAX body**, thereby sending a **post-request**
    to the **Flask-backend**, retrieving and rendering the latest log-records stored in the database to the frontend datatables
 
 
