@@ -4,6 +4,7 @@ from .Logqueue import LogQueue
 from .logger import log, LogLevel
 import string
 
+@dataclass
 class ReadFile:
     _filepath: str 
 

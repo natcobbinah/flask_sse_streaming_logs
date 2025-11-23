@@ -5,6 +5,7 @@ from flask_sse_with_logs.models import (
     SIEMLogsDBtable,
     SIEMLogsFileDBProperties
 )
+from flask_sse_with_logs.generate_logs import generate_network_server_logs
 from flask_sse_with_logs.network_folder_access import SIEMNetworkFolderAccess
 from flask_sse_with_logs.utils import log, LogLevel
 from .default_route_response import default_no_available_data_response
@@ -12,6 +13,7 @@ from sqlalchemy import or_, select, func
 from flask_sse_with_logs.config import db
 import json
 import time 
+import random
 
 
 siem_route_view_bp = Blueprint("siem_route", __name__)
@@ -21,9 +23,8 @@ SIEM_LOGS_DIRECTORY ='SIEM_logs'
 SERVER_SENT_EVENT_STREAM_CONTENT_TYPE = "text/event-stream"
 SIEM_HOMEPAGE = 'siem_homepage.html'
 
-@siem_route_view_bp.route("/siem_logs", methods=["GET"])
+@siem_route_view_bp.route("/", methods=["GET"])
 def siem_logs_homepage() -> str:
-    print("siem_logs_homepage called")
     log(type=LogLevel.INFO, message="SIEM application homepage")
 
     return render_template(
@@ -33,7 +34,8 @@ def siem_logs_homepage() -> str:
 
 @siem_route_view_bp.route("/ingesting_and_processing_siem_logs", methods=["GET"])
 def auto_refresh_siemlogs():
-    print("auto_refresh_siemlogs called")
+    log(type=LogLevel.INFO, message="Starting server-sent event stream for SIEM logs")
+
     """
     stream_with_context is wrapped around generator function in order to be able
     to access request and app bound context information
@@ -49,7 +51,8 @@ def auto_refresh_siemlogs():
 
 
 def autofetch_siem_logs_stream():
-    print("autofetch_siem_logs_stream called")
+    log(type=LogLevel.INFO, message="Auto-fetching SIEM logs stream started")
+
     while True:
         if db.session.query(SIEMLogsDBtable).count() > 0:
             # check if SIEMLogsDBtable has already been populated previously
@@ -62,18 +65,30 @@ def autofetch_siem_logs_stream():
             if logfile_processing_status == INGESTING_STATUS:
                 info = json.dumps({"message": "Completed"})
                 yield "data: {}\n\n".format(info)
-            else:
-                logfile_processing_status = ingest_and_process_logfiles_from_siem_dir()
+        else:
+            logfile_processing_status = ingest_and_process_logfiles_from_siem_dir()
 
-                if logfile_processing_status == INGESTING_STATUS:
-                    info = json.dumps({"message": "Completed"})
-                    yield "data: {}\n\n".format(info)
-                    # wait 1 min before fetching from siem directory again
-                    time.sleep(60)
+            if logfile_processing_status == INGESTING_STATUS:
+                info = json.dumps({"message": "Completed"})
+                yield "data: {}\n\n".format(info)
+                # wait 1 min before fetching from siem directory again
+                time.sleep(60)
 
 def ingest_and_process_logfiles_from_siem_dir() -> str:
-    print("ingested called")
-    # network folder access
+
+    log(type=LogLevel.INFO, message="Ingesting and processing SIEM logfiles from network folder access started")
+
+    random_decider_to_write_to_siemlogs = random.randint(1, 5)
+
+    if random_decider_to_write_to_siemlogs % 2 == 0:
+        # simulate log generation only sometimes
+        generate_network_server_logs()
+
+        log(type=LogLevel.INFO, message="Generated new SIEM logfile content")
+
+    
+    log(type=LogLevel.INFO, message="Accessing network folder for SIEM logfiles")
+
     siem_logfile_path = f'flask_sse_with_logs/{SIEM_LOGS_DIRECTORY}'
     siem_network_folder_access = SIEMNetworkFolderAccess(
         siem_logfile_access_path=siem_logfile_path
@@ -82,9 +97,10 @@ def ingest_and_process_logfiles_from_siem_dir() -> str:
     return INGESTING_STATUS
 
 
-@siem_route_view_bp.route("/siem_logs", methods=["POST"]) 
+@siem_route_view_bp.route("/", methods=["POST"]) 
 def populate_homepage_datatable() -> json:
-    log(type=LogLevel.INFO, message="returns records to datatables frontend")
+
+    log(type=LogLevel.INFO, message="Populating homepage datatable with SIEM logs")
 
     draw = int(request.form.get("draw", 1))
     row = int(request.form.get("start", 0))  # offset

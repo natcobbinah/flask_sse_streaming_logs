@@ -12,9 +12,8 @@ instance/
 
 flask_sse_with_logs/.env
 
-*.logs
-
-flask_sse_with_logs.logs
+**/*.log
+**/*.logs
 
 .pytest_cache/
 .coverage

@@ -12,10 +12,13 @@ from .models import (
 from .routes import siem_route_view_bp
 from .generate_logs import generate_network_server_logs
 from .network_folder_access import SIEMNetworkFolderAccess
+from .utils import LOG_CONFIG
 import os
+import logging.config
 
 migrate = Migrate()
-SIEM_LOGS_DIRECTORY ='SIEM_logs'
+
+logging.config.dictConfig(LOG_CONFIG)
 
 def create_app(test_config=None):
 
@@ -38,9 +41,6 @@ def create_app(test_config=None):
 
     # create table schema in database
     _create_db_tables(app,db)
-
-    # generate and write log to (SIEM_logs) directory on application startup
-    generate_network_server_logs()
 
     return app 
 

@@ -21,10 +21,11 @@ class SIEMNetworkFolderAccess:
 
         log(type=LogLevel.INFO, message='Accessing logs in SIEM directory')
 
-        print(self.siem_logfile)
+        log(type=LogLevel.INFO, message=f'SIEM Logfile {self.siem_logfile}')
 
         logfiles_path = glob.glob(self.siem_logfile)
-        print(logfiles_path)
+
+        log(type=LogLevel.INFO, message=f'Logfiles path: {logfiles_path}')
 
         siem_logfilespath_queue = LogQueue()
 
@@ -49,7 +50,7 @@ class SIEMNetworkFolderAccess:
         while not logfiles_path_queue.is_empty():
             current_logfile = logfiles_path_queue.dequeue()
 
-            print(f'currentlogfile {current_logfile}')
+            log(type=LogLevel.INFO, message=f'Processing logfile: {current_logfile}')
 
             self._store_siem_logfile_properties_to_db(current_logfile)
 
@@ -84,6 +85,7 @@ class SIEMNetworkFolderAccess:
 
         current_logfile_statresults = os.stat(current_logfile)
 
+        log(type=LogLevel.INFO, message=f'Current logfile size: {current_logfile_statresults.st_size}')
 
         # only (siem_events.log) file is ingested and processed for now, so we assume its id will be 1,
         # if the others will be ingested as well, they can be assigned with different ids
@@ -103,6 +105,8 @@ class SIEMNetworkFolderAccess:
             )
             db.session.add(siem_logfile_properties)
             db.session.commit()
+
+            log(type=LogLevel.INFO, message='New logfile properties (file size) inserted into SIEMLogsFileDBProperties table')
         
         else:
             # get current (siem_events.log) file size and compare it to the previously processed logfile properties stored in 
@@ -132,6 +136,8 @@ class SIEMNetworkFolderAccess:
 
                 db.session.execute(stmt) 
                 db.session.commit()
+
+                log(type=LogLevel.INFO, message='logfile properties (file size) has been updated in SIEMLogsFileDBProperties table')
             
             else:
                 # if there's been no change to the (siem_event.log) file
@@ -150,8 +156,12 @@ class SIEMNetworkFolderAccess:
                 db.session.execute(stmt) 
                 db.session.commit()
 
+                log(type=LogLevel.INFO, message='logfile properties (file size) has not been updated in SIEMLogsFileDBProperties table')
+
 
     def _get_siem_logfile_size_status(self) -> str:
+        log(type=LogLevel.INFO, message='Getting SIEM logfile size status from SIEMLogsFileDBProperties table')
+
         stmt = select(SIEMLogsFileDBProperties).where(
             SIEMLogsFileDBProperties.id == 1
         )
@@ -161,7 +171,7 @@ class SIEMNetworkFolderAccess:
         if(
             db.session.execute(stmt).scalar().logfile_status
             == IngestLogFileState.NEW_LOGFILE_PROPERTIES.value
-        ):
+        ):  
             return IngestLogFileState.NEW_LOGFILE_PROPERTIES.value
         
         # indicates, the (siem_event.log) file has been updated, thus we connect to SIEM_folder, ingest and process the logfile
@@ -182,5 +192,9 @@ class SIEMNetworkFolderAccess:
         logparse_instance = ParseSIEMLogs(
             logfile
         )
+
+        log(type=LogLevel.INFO, message='Parsing SIEM logfile and storing parsed logs to database')
+
         logparse_instance.parselogs_and_store_to_db()
         
+        log(type=LogLevel.INFO, message='Finished parsing SIEM logfile and storing parsed logs to database')
