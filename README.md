@@ -23,6 +23,18 @@ being used by users both externally and internally, so that real-time fixes can 
 8. Run the application by typing, **flask run** on the **IDEs** or **CLI** to launch the application
 9. Visit the url_path, usually (127.0.0.1:5000) on the terminal, to access the Real-Time LogEvent dashboard
 
+## APPLICATION FLOW
+![application flow](https://github.com/user-attachments/assets/b5bf6c84-68ee-43fc-b4b4-95e2fe327154)
+
+1. On application launch, **DataTables** makes a **post-request** from the **frontend** to the **Flask backend** server
+2. On **page load at the same time**, the frontend sends a **GET server-sent event stream** to the **Flask backend**, which triggers
+   the **generator function** to **run**, thereby **ingesting and processing the logfile** from the SIEM directory
+3. After parsing and processing the logfile records and storing the results in the database tables, a **COMPLETED** server-sent event stream
+   is returned to the frontend
+4. The **frontend**, upon receiving the response, **reloads the datatable**, which by default contains an **AJAX body**, thereby sending a **post-request**
+   to the **Flask-backend**, retrieving and rendering the latest log-records stored in the database to the frontend datatables
+
+
 ## SAMPLE IMAGES SHOWING THE WORKING APPLICATION AND THE VARIOUS STATES BEFORE THE LOG-EVENTS DASHBOARD IS VIEWED BY END-USERS
  ### Backend Application Start
 <img width="1920" height="1080" alt="application start backend" src="https://github.com/user-attachments/assets/f86f3b35-ed90-478a-8d72-fd597007794e" />
