@@ -1,7 +1,30 @@
 # BUILD REAL-TIME LOG-EVENTS DASHBOARD USING FLASK and SERVER-SENT-EVENTS
+This application demonstrates  the ingestion of telemetric data; for this purpose, logs. are written to a centralized SIEM system, where they 
+are parsed and processed with results showcased on dashboards so IT, or  the development team, can easily see how the application is responding as it is 
+being used by users both externally and internally, so that real-time fixes can be carried out to curb incidents that occur in the long term.
 
-## IMAGES SHOWIING THE VARIOUS APPLICATION STATES WHEN LAUNCHED
-Backend Application Start
+## STEPS TO RUN THE APPLICATION LOCALLY
+1. Clone the application from this repository
+2. Change directory (cd) to **flask_sse_with_logs** using your IDE or terminal program of choice
+3. Create a python virtual environment (so as not to pollute your existing environment) with packages that will be installed  to ensure the working of this application
+4. Activate the virtual environment
+   ```
+    on Windows: 
+   .venv/Scripts/activate
+
+   on mac/linux
+   .venv/bin/activate
+   ```
+6. Install the packages listed in the **requirements.txt** file
+   ```
+   pip install -r requirements.txt
+   ```
+
+8. Run the application by typing, **flask run** on the **IDEs** or **CLI** to launch the application
+9. Visit the url_path, usually (127.0.0.1:5000) on the terminal, to access the Real-Time LogEvent dashboard
+
+## SAMPLE IMAGES SHOWING THE WORKING APPLICATION AND THE VARIOUS STATES BEFORE THE LOG-EVENTS DASHBOARD IS VIEWED BY END-USERS
+ ### Backend Application Start
 <img width="1920" height="1080" alt="application start backend" src="https://github.com/user-attachments/assets/f86f3b35-ed90-478a-8d72-fd597007794e" />
 
  ### Frontend Application Start
