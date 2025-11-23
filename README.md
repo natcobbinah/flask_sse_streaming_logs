@@ -35,6 +35,7 @@ Backend Application Start
 <img width="1381" height="304" alt="db size after application runs for sometime" src="https://github.com/user-attachments/assets/dfe1cef0-c5b4-482b-8956-699d08286ceb" />
 
  ### Frontend after application runs for sometime
-<img width="1381" height="304" alt="db size after application runs for sometime" src="https://github.com/user-attachments/assets/1ab8413f-5eb3-4c96-8a08-c7aa6ba69afb" />
+<img width="1366" height="768" alt="homepage datatable after logingestion runs for sometime" src="https://github.com/user-attachments/assets/91cd69fa-248e-4bef-906b-172ac7f72017" />
+
 
 
