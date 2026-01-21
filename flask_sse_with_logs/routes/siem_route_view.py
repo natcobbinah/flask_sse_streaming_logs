@@ -34,7 +34,18 @@ def siem_logs_homepage() -> str:
 
 @siem_route_view_bp.route("/ingesting_and_processing_siem_logs", methods=["GET"])
 def auto_refresh_siemlogs():
-    log(type=LogLevel.INFO, message="Starting server-sent event stream for SIEM logs")
+    log(
+        type=LogLevel.ERROR,
+        component="SIEM Route View",
+        event="Auto-fetching SIEM logs stream",
+        filename="siem_route_view.py",
+        function_name="auto_refresh_siemlogs",
+        fileline=52,
+        correlation_id=correlation_id,
+        message="Auto-fetching SIEM logs stream started",
+        message_data='N/A',
+        reason="N/A",
+    ) 
 
     """
     stream_with_context is wrapped around generator function in order to be able
